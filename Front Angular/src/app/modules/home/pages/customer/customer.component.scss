@@ -1,0 +1,20 @@
+input{
+  padding: 5px 5px;
+  margin: 5px 0;
+  width: 500px;
+}
+button{
+  background-color: #EEE;
+  border: 1px solid black;
+  padding: 2px 4px;
+  margin: 5px 0;
+}
+button:hover{
+  background-color: #EEE5;
+}
+.alert {
+  color:red;
+}
+.sucess {
+  color: green;
+}

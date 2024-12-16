@@ -1,0 +1,21 @@
+<h1>Customers</h1>
+<ul>
+  <li *ngFor="let item of customers">
+    Telefone: {{item.id.telephone}}<br>
+    CPF: {{item.id.cpf}}<br>
+    Nome: {{item.name}}<br>
+    Endereço: {{item.address}}<br><br>
+    <button (click)="deleteCustomer(item.id.telephone, item.id.cpf)">Remover Customer</button><br><br>
+  </li>
+</ul>
+<hr><br>
+<h2>Adicionar ou Modificar Customers</h2>
+<div>
+  <input #telefone placeholder="Telefone"><br><br>
+  <input #cpf placeholder="CPF"><br><br>
+  <input #nome placeholder="Nome"><br><br>
+  <input #endereco placeholder="Endereço"><br><br>
+  <button (click)="addCustomer(telefone.value, cpf.value, nome.value, endereco.value)">Adicionar Customer</button><br>
+  <button (click)="modifyCustomer(telefone.value, cpf.value, nome.value, endereco.value)">Modificar Customer</button>
+</div>
+

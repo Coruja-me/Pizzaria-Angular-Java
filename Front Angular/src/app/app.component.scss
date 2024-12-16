@@ -1,0 +1,20 @@
+li{
+  display: inline;
+  list-style-type: none;
+}
+a{
+  border: 1px solid orange;
+  padding: 6px;
+  margin: 0;
+  text-decoration: none;
+  color: #000;
+}
+.linkAtivo{
+  background: orange;
+}
+a:hover{
+  background-color: orange;
+}
+a:visited{
+  color: black;
+}

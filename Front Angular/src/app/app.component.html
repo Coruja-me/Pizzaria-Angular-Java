@@ -1,0 +1,19 @@
+<header>
+  <nav>
+    <ul>
+      <li>
+        <a routerLink="/" [routerLinkActive]="['linkAtivo']" [routerLinkActiveOptions]="{exact: true}">Home</a>
+      </li>
+      <li>
+        <a routerLink="/customer/caua/0000" [routerLinkActive]="['linkAtivo']" [routerLinkActiveOptions]="{exact: true}">Cadastro de Clientes</a>
+      </li>
+      <li>
+        <a routerLink="/pizza" [routerLinkActive]="['linkAtivo']" [routerLinkActiveOptions]="{exact: true}">Cadastro de pizza</a>
+      </li>
+      <li>
+        <a routerLink="/pedido" [routerLinkActive]="['linkAtivo']" [routerLinkActiveOptions]="{exact: true}">Pedido</a>
+      </li>
+    </ul>
+  </nav>
+</header>
+<router-outlet />
