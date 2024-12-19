@@ -2,6 +2,9 @@ package com.minhaempresa.spring.application.services;
 
 import java.util.Base64;
 import java.util.Date;
+
+import javax.crypto.SecretKey;
+
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -26,48 +29,51 @@ public class JwtImpl implements JwtService {
     @Value("${jwt.key}")
     private String jwtKey;
 
-    private Key getSigningKey() {
+    private SecretKey getSigningKey() {
         byte[] decodedKey = Base64.getDecoder().decode(jwtKey);
-        return Keys.hmacShaKeyFor(decodedKey); 
+        return Keys.hmacShaKeyFor(decodedKey);
     }
 
     @Override
     public String buildToken(UserDTO userDTO) {
-        long expiration = Long.parseLong(jwtExpiration); 
+        long expiration = Long.parseLong(jwtExpiration);
         LocalDateTime localDateTime = LocalDateTime.now().plusMinutes(expiration);
         Date expirationDate = Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
         String expirationTime = localDateTime.toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm"));
 
-        String token = Jwts.builder()
+        return Jwts.builder()
                 .subject(userDTO.getUser())
                 .expiration(expirationDate)
+                .claim("name", userDTO.getUser())
                 .claim("expirationTime", expirationTime)
-                .signWith(getSigningKey()) 
+                .signWith(getSigningKey())
                 .compact();
-
-        return "Bearer " + token;
     }
 
-    @SuppressWarnings("deprecation")
+    private String extractToken(String token) {
+        return token.replace("Bearer ", "");
+    }
+
     @Override
     public Claims getClaims(String token) throws ExpiredJwtException {
         return Jwts.parser()
-                .setSigningKey(getSigningKey()) // Usar a chave para verificar a assinatura
+                .verifyWith(getSigningKey())
                 .build()
-                .parseClaimsJws(token.replace("Bearer ", ""))
-                .getBody(); // Retornar os claims extraídos do token
+                .parseSignedClaims(extractToken(token))
+                .getPayload();
     }
-
 
     @Override
     public boolean isValidToken(String token) {
         try {
             Claims claims = getClaims(token);
-            Date date = claims.getExpiration();
-            LocalDateTime expiration = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
-            boolean dateTimeIsAfterExpiration = LocalDateTime.now().isAfter(expiration);
-            return !dateTimeIsAfterExpiration;
-        }catch(ExpiredJwtException e){
+            LocalDateTime expiration = claims.getExpiration().toInstant()
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDateTime();
+            return !LocalDateTime.now().isAfter(expiration);
+        } catch (ExpiredJwtException e) {
+            return false;
+        } catch (Exception e) {
             return false;
         }
     }
@@ -75,6 +81,6 @@ public class JwtImpl implements JwtService {
     @Override
     public String getLogin(String token) {
         Claims claims = getClaims(token);
-        return claims.getSubject(); 
+        return claims.getSubject();
     }
 }
