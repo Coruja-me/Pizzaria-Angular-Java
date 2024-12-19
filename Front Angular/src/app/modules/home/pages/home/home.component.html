@@ -1,1 +1,9 @@
-<p>home works!</p>
+<h1>Login</h1>
+
+<form #formulario="ngForm" (ngSubmit)="submitForm(formulario)">
+  <div>
+    <input type="text" name="user" ngModel placeholder="Usuário" required />
+    <input type="password" name="pswd" ngModel placeholder="Senha" required />
+    <button [disabled]="formulario.invalid">Logar</button>
+  </div>
+</form>

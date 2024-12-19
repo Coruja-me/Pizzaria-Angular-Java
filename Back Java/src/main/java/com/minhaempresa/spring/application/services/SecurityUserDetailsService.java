@@ -11,18 +11,19 @@ import org.springframework.stereotype.Service;
 import com.minhaempresa.spring.application.dtos.UserDTO;
 
 @Service
-public class SecurityUserDetailsService implements UserDetailsService{
+public class SecurityUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException{
         UserDTO userDTO = new UserDTO();
 
-        if(login != null){
-            userDTO.setUser(login);
-            userDTO.setPswd("0000");
+        if(login.equals("Teste")){
+            userDTO.setUser("Teste");
+            userDTO.setPassword("0000");
         }
         else{
-            throw new UsernameNotFoundException("Usuário não encontrado!");
+            userDTO.setUser("");
+            userDTO.setPassword("");
         }
 
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();

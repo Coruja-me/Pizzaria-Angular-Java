@@ -1,14 +1,12 @@
 package com.minhaempresa.spring.application.services;
 
-import java.util.Base64;
 import java.util.Date;
-
-import javax.crypto.SecretKey;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
+import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -17,22 +15,14 @@ import com.minhaempresa.spring.application.dtos.UserDTO;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
-
-import java.security.Key;
 
 @Service
-public class JwtImpl implements JwtService {
+public class JwtServiceImpl implements JwtService {
     @Value("${jwt.expiration}")
     private String jwtExpiration;
 
     @Value("${jwt.key}")
     private String jwtKey;
-
-    private SecretKey getSigningKey() {
-        byte[] decodedKey = Base64.getDecoder().decode(jwtKey);
-        return Keys.hmacShaKeyFor(decodedKey);
-    }
 
     @Override
     public String buildToken(UserDTO userDTO) {
@@ -41,25 +31,23 @@ public class JwtImpl implements JwtService {
         Date expirationDate = Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
         String expirationTime = localDateTime.toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm"));
 
-        return Jwts.builder()
-                .subject(userDTO.getUser())
+        String token = Jwts.builder()
                 .expiration(expirationDate)
-                .claim("name", userDTO.getUser())
+                .subject(userDTO.getUser())
                 .claim("expirationTime", expirationTime)
-                .signWith(getSigningKey())
+                .signWith(SignatureAlgorithm.HS512, jwtKey)
                 .compact();
+
+        return "Bearer " + token;
     }
 
-    private String extractToken(String token) {
-        return token.replace("Bearer ", "");
-    }
 
     @Override
     public Claims getClaims(String token) throws ExpiredJwtException {
         return Jwts.parser()
-                .verifyWith(getSigningKey())
+                .setSigningKey(jwtKey)
                 .build()
-                .parseSignedClaims(extractToken(token))
+                .parseSignedClaims(token)
                 .getPayload();
     }
 
@@ -72,8 +60,6 @@ public class JwtImpl implements JwtService {
                     .toLocalDateTime();
             return !LocalDateTime.now().isAfter(expiration);
         } catch (ExpiredJwtException e) {
-            return false;
-        } catch (Exception e) {
             return false;
         }
     }

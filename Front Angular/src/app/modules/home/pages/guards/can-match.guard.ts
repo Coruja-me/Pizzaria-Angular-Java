@@ -1,5 +1,5 @@
 import { CanMatchFn, Router } from '@angular/router';
-import { CustomerService } from '../../service/customer.service';
+import { CustomerService } from '../../services/customer.service';
 import { inject } from '@angular/core';
 
 export const canMatchGuard: CanMatchFn = (route, segments) => {

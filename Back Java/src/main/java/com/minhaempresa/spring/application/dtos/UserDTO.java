@@ -6,8 +6,8 @@ public class UserDTO {
     public String getUser() {
         return user;
     }
-    public void setUser(String us) {
-        this.user = us;
+    public void setUser(String user) {
+        this.user = user;
     }
 
     private String password;
@@ -15,8 +15,8 @@ public class UserDTO {
     public String getPassword() {
         return password;
     }
-    public void setPswd(String pswd) {
-        this.password = pswd;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     
