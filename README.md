@@ -24,7 +24,7 @@ Este é um projeto de demonstração de uma loja de pizzas utilizando **Spring B
 
 1. Clone este repositório:
     ```bash
-    git clone https://github.com/seu-usuario/pizza-store.git
+    git clone https://github.com/Coruja-me/pizza-store.git
     cd pizza-store/backend
     ```
 
